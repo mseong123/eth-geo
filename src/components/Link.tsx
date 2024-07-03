@@ -167,16 +167,16 @@ export const BaseLink = forwardRef(function Link(
 
   return (
     <ChakraLink
-      onClick={() =>
-        trackCustomEvent(
-          customEventOptions ?? {
-            eventCategory: `Link`,
-            eventAction: `Clicked`,
-            eventName: `Clicked on internal link`,
-            eventValue: href,
-          }
-        )
-      }
+      // onClick={() =>
+      //   trackCustomEvent(
+      //     customEventOptions ?? {
+      //       eventCategory: `Link`,
+      //       eventAction: `Clicked`,
+      //       eventName: `Clicked on internal link`,
+      //       eventValue: href,
+      //     }
+      //   )
+      // }
       {...commonProps}
       as={NextLink}
     >

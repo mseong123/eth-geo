@@ -13,12 +13,12 @@ export type NavItem = {
 } & LinkXorItems
 
 export type NavSectionKey =
-  | "geo"
-  | "contribute"
+  "geo" | "contribute"
 
 export type NavSectionDetail = {
   label: string
   ariaLabel: string
+  href:string
   items: NavItem[]
 }
 

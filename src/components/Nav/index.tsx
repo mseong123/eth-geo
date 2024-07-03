@@ -1,6 +1,6 @@
 import { lazy, Suspense, useRef } from "react"
 // import { useTranslation } from "next-i18next"
-import { Box, Flex, Hide, Show, useDisclosure } from "@chakra-ui/react"
+import { Box, Flex, Hide, Show, useDisclosure, Text } from "@chakra-ui/react"
 
 import { EthHomeIcon } from "@/components/icons"
 import { BaseLink } from "@/components/Link"
@@ -62,6 +62,7 @@ const Nav = () => {
             justifyContent={{ base: "flex-end", md: "space-between" }}
             ms={{ base: 3, xl: 8 }}
           >
+           
             {/* avoid rendering desktop Menu version on mobile */}
 
             {isClient && isDesktopFlag ? (

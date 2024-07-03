@@ -82,11 +82,11 @@ const Menu = ({ sections, ...props }: NavMenuProps) => {
                     </Button>
                   </Trigger>
                   {/* Desktop Menu content */}
-                  <MenuContent
+                  {/* <MenuContent
                     items={items}
                     isOpen={isOpen}
                     sections={sections}
-                  />
+                  /> */}
                 </Item>
               )
             })}

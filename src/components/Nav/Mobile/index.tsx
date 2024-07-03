@@ -36,7 +36,7 @@ const MobileNavMenu = ({
 
   return (
     <>
-      {/* <HamburgerButton isMenuOpen={isMenuOpen} onToggle={onToggle} {...props} /> */}
+      <HamburgerButton isMenuOpen={isMenuOpen} onToggle={onToggle} {...props} />
 
       {/* DRAWER MENU */}
       <Drawer

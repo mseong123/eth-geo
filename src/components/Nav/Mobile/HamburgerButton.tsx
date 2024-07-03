@@ -1,5 +1,5 @@
 import { motion } from "framer-motion"
-import { useTranslation } from "next-i18next"
+// import { useTranslation } from "next-i18next"
 import { type ButtonProps, Icon } from "@chakra-ui/react"
 
 import { IconButton } from "@/components/Buttons"
@@ -26,13 +26,13 @@ const HamburgerButton = ({
   onToggle,
   ...props
 }: HamburgerProps) => {
-  const { t } = useTranslation("common")
+  // const { t } = useTranslation("common")
 
   return (
     <IconButton
       id={HAMBURGER_BUTTON_ID}
       onClick={onToggle}
-      aria-label={t("aria-toggle-search-button")}
+      aria-label={"aria-toggle-search-button"}
       variant="ghost"
       isSecondary
       px={0}

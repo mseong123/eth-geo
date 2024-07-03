@@ -1,4 +1,4 @@
-import { useRouter } from "next/router"
+import { usePathname } from "next/navigation"
 import {
   Accordion,
   AccordionButton,
@@ -35,7 +35,7 @@ const LvlAccordion = ({
   activeSection,
   onToggle,
 }: LvlAccordionProps) => {
-  const { asPath, locale } = useRouter()
+  const asPath = usePathname()
   const menuColors = useNavMenuColors()
   return (
     <Accordion allowToggle boxShadow="menu.accordion">

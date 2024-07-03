@@ -42,13 +42,15 @@ export const useNav = () => {
 
   const linkSections: NavSections = {
     geo: {
-      label: "geo",
+      label: "Geo",
       ariaLabel: "geo-menu",
+      href: "/geo",
       items: [],
-        },
+    },
     contribute: {
-      label: "contribute",
+      label: "Contribute",
       ariaLabel: "contribute-menu",
+      href: "/contribute",
       items: [],
     }
   }
