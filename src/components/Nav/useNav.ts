@@ -56,10 +56,12 @@ export const useNav = () => {
   }
 
   const splitPath = asPath.split("/")
-  const fromPageParameter =
+  const frompageparameter =
     splitPath.length > 1 && splitPath[1] !== "languages"
       ? `?${FROM_QUERY}=/${splitPath.slice(1).join("/")}`
       : ""
+
+  
 
   const toggleColorMode = () => {
     chakraToggleColorMode()
@@ -71,14 +73,14 @@ export const useNav = () => {
   }
 
   const mobileNavProps = {
-    fromPageParameter,
+    frompageparameter,
     isOpen,
     toggleColorMode,
     onToggle,
   }
 
   return {
-    fromPageParameter,
+    frompageparameter,
     linkSections,
     mobileNavProps,
     toggleColorMode,

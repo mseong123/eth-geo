@@ -9,6 +9,8 @@ import {
   Viewport,
 } from "@radix-ui/react-navigation-menu"
 
+import { BaseLink } from "@/components/Link"
+
 import { Button } from "@/components/Buttons"
 
 import { MAIN_NAV_ID, NAV_PY, SECTION_LABELS } from "@/lib/constants"
@@ -44,13 +46,15 @@ const Menu = ({ sections, ...props }: NavMenuProps) => {
             m="0"
           >
             {SECTION_LABELS.map((sectionKey) => {
-              const { label, items } = sections[sectionKey]
+              const { label, items, href } = sections[sectionKey]
               const isActive = activeSection === sectionKey
 
               return (
                 <Item key={sectionKey} value={label}>
                   <Trigger asChild>
                     <Button
+                      as={BaseLink}
+                      href={href}
                       py="2"
                       px={{ base: "3", lg: "4" }}
                       variant="ghost"
