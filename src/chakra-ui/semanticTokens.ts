@@ -114,4 +114,6 @@ const semanticTokens = {
   },
 }
 
+console.log(semanticTokens)
+
 export default semanticTokens
