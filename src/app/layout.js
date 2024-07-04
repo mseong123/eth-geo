@@ -14,8 +14,8 @@ export default function AppLayout({
   children,
 }) {
   return (
-    <html lang="en"> 
-      <body >
+    <html lang="en" suppressHydrationWarning={true}> 
+      <body suppressHydrationWarning={true}>
         <ChakraProvider>
           <RootLayout>
             {children}
