@@ -66,7 +66,7 @@ function convertData(dataJSON) {
     let organisations = dataJSON.data.filter(data=>{
       if (data['Base Where'].includes(country))
         return data
-    })
+    }) 
     return {
       region:regionMapping[country],
       regionCoordinates:coordinatesMapping[regionMapping[country]],//[longtitude,latitude]
@@ -75,6 +75,21 @@ function convertData(dataJSON) {
       organisationData:organisations, //array
       color:colorMapping[regionMapping[country]]
     }
+  })
+  //count organisation by regions and countries
+  let SEAcount = 0;
+  let EastAsiaCount = 0;
+  result.forEach(country=> {
+    if (country.region === "SEA")
+      SEAcount += country.organisationData.length;
+    else
+      EastAsiaCount += country.organisationData.length;
+  })
+  result.forEach(country=>{
+    if (country.region === "SEA")
+      country.regionCount = SEAcount
+    else 
+      country.regionCount = EastAsiaCount
   })
   return result
 }

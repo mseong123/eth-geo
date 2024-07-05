@@ -23,7 +23,6 @@ if (typeof window !== 'undefined') {
 let containerWidth;
 let containerHeight;
 
-
 function zoomToLocation(coordinates) {
     svg.transition().duration(750).tween("rotate", function() {
         const r = d3.interpolate(projection.rotate(), [-coordinates[0],-coordinates[1]]);
@@ -36,12 +35,22 @@ function zoomToLocation(coordinates) {
 					.attr('cx', d => projection(d.regionCoordinates)[0])
 					.attr('cy', d => projection(d.regionCoordinates)[1])
 					.style("display", d => isVisible(d.regionCoordinates)? "block":"none" )
+				location
+					.selectAll("text")
+					.attr('x', d => projection(d.regionCoordinates)[0])
+					.attr('y', d => projection(d.regionCoordinates)[1])
+					.style("display", d => isVisible(d.regionCoordinates)? "block":"none" )	
 			}
 			else {
 				location
 					.selectAll("circle")
 					.attr('cx', d => projection(d.countryCoordinates)[0])
 					.attr('cy', d => projection(d.countryCoordinates)[1])
+					.style("display", d => isVisible(d.countryCoordinates)? "block":"none" )
+				location
+					.selectAll("text")
+					.attr('x', d => projection(d.countryCoordinates)[0])
+					.attr('y', d => projection(d.countryCoordinates)[1])
 					.style("display", d => isVisible(d.countryCoordinates)? "block":"none" )
 			}
         }
@@ -61,12 +70,22 @@ function dragged(event) {
 				.attr('cx', d => projection(d.regionCoordinates)[0])
 				.attr('cy', d => projection(d.regionCoordinates)[1])
 				.style("display", d => isVisible(d.regionCoordinates)? "block":"none" )
+			location
+				.selectAll("text")
+				.attr('x', d => projection(d.regionCoordinates)[0])
+				.attr('y', d => projection(d.regionCoordinates)[1])
+				.style("display", d => isVisible(d.regionCoordinates)? "block":"none" )
 		}
 		else {
 			location
 				.selectAll("circle")
 				.attr('cx', d => projection(d.countryCoordinates)[0])
 				.attr('cy', d => projection(d.countryCoordinates)[1])
+				.style("display", d => isVisible(d.countryCoordinates)? "block":"none" )
+			location
+				.selectAll("text")
+				.attr('x', d => projection(d.countryCoordinates)[0])
+				.attr('y', d => projection(d.countryCoordinates)[1])
 				.style("display", d => isVisible(d.countryCoordinates)? "block":"none" )
 		}
 	}
@@ -90,7 +109,7 @@ function isVisible(coords) {
 function zoomed(event) {
 	zooming = true;
     const {transform} = event;
-    const zoomCenterX = containerWidth / 2;
+	const zoomCenterX = containerWidth / 2;
     const zoomCenterY = containerHeight / 2;
     const zoomScale = event.transform.k; // Example: Zoom to scale 2 
     const newX = containerWidth / 2 - zoomCenterX * zoomScale;
@@ -99,7 +118,8 @@ function zoomed(event) {
     transform.y = newY;
     land.attr("transform", transform);
     water.attr("transform", transform)
-	location.attr("transform", transform)
+	location.selectAll("circle").attr("transform", transform)
+	location.selectAll("text").attr("transform", transform)
 }
 
 function zoomEnd(event) {
@@ -113,6 +133,15 @@ function zoomEnd(event) {
 			.attr("r", 6)
 			.style("display", d => isVisible(d.countryCoordinates)? "block":"none" )
 			.on("end",()=>zooming = false)
+		location	
+			.selectAll("text")
+			.transition()
+			.duration(250)
+			.text(d=>d.organisationData.length)
+			.attr('x', d => projection(d.countryCoordinates)[0])
+			.attr('y', d => projection(d.countryCoordinates)[1])
+			.style("display", d => isVisible(d.countryCoordinates)? "block":"none" )
+			.on("end",()=>zooming = false)
 		currentZoom = true;
 	}
 	else {
@@ -123,6 +152,15 @@ function zoomEnd(event) {
 			.attr('cx', d => projection(d.regionCoordinates)[0])
 			.attr('cy', d => projection(d.regionCoordinates)[1])
 			.attr("r", 15)
+			.style("display", d => isVisible(d.regionCoordinates)? "block":"none" )
+			.on("end",()=>zooming = false)
+		location	
+			.selectAll("text")
+			.transition()
+			.duration(250)
+			.text(d=>d.organisationData)
+			.attr('x', d => projection(d.regionCoordinates)[0])
+			.attr('y', d => projection(d.regionCoordinates)[1])
 			.style("display", d => isVisible(d.regionCoordinates)? "block":"none" )
 			.on("end",()=>zooming = false)
 			currentZoom = false;
@@ -202,5 +240,15 @@ export function renderLocation(locationJSON) {
 				e.stopPropagation()
 				currentZoom? zoomToLocation(d.countryCoordinates) : zoomToLocation(d.regionCoordinates) 
 			})
+		location
+			.selectAll("text")
+			.data(locationJSON)
+			.enter()
+			.append("text")
+			.attr("x", d=>projection(d.regionCoordinates)[0])
+			.attr("y", d=>projection(d.regionCoordinates)[1])
+			.text(d=>d.regionCount)
+			.attr("fill", "white")
+
 	}
 }
