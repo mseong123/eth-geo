@@ -30,7 +30,7 @@ function dragged(event) {
 		.selectAll("circle")
 		.attr('cx', d => projection(d.regionCoordinates)[0])
         .attr('cy', d => projection(d.regionCoordinates)[1])
-        .attr("display", d => isVisible(d.regionCoordinates)? "block":"none" )
+        .style("display", d => isVisible(d.regionCoordinates)? "block":"none" )
 }
 
 const drag = d3.drag()
@@ -55,9 +55,9 @@ function zoomed(event) {
     const newY = containerHeight / 2 - zoomCenterY * zoomScale; 
     transform.x = newX;
     transform.y = newY;
-    // circle.attr("transform", transform )
     land.attr("transform", transform);
-    water.attr("transform", transform)    
+    water.attr("transform", transform)
+	location.attr("transform", transform)
 }
 
 
