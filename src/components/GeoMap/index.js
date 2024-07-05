@@ -9,7 +9,7 @@ import {
   import React from 'react'
   
   import { MAIN_CONTENT_ID } from "@/lib/constants"
-  import { renderGlobe, renderLocation } from "@/lib/utils/d3-utilities"
+  import { renderGlobe, renderLocation, passInitialProps, updateLightDarkTheme } from "@/lib/utils/d3-utilities"
 
   const Page = React.forwardRef(({ children}, ref) => {
     return (
@@ -37,10 +37,15 @@ Page.displayName=Page
     const { colorMode } = useColorMode();
     
 
-    useEffect(()=>{ 
-        renderGlobe(containerRef, svgRef, topoJSONData, theme, colorMode)
-        renderLocation(locationJSON)
-        
+    useEffect(()=>{
+      passInitialProps(containerRef, svgRef, theme, colorMode) 
+      renderGlobe(topoJSONData)
+      renderLocation(locationJSON)
+    },[])
+
+    useEffect(()=>{
+      updateLightDarkTheme(colorMode)
+      
     },[colorMode])
 
     return (

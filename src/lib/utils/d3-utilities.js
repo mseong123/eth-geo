@@ -7,8 +7,10 @@ let water;
 let location;
 let projection;
 let path;
-let SCALE
+let SCALE;
 let sens = 0.2;
+let theme;
+let colorMode;
 
 if (typeof window !== 'undefined') {
 	//hardcoded breakpoints
@@ -69,47 +71,60 @@ const zoom = d3.zoom()
 	.scaleExtent([1, 6])
     .on("zoom", zoomed)
 
-export function renderGlobe(containerRef, svgRef, topoJSONData, theme, colorMode) {
-	// console.log(theme)
-	if (!svg) {
-		const landColor = colorMode === 'light'? theme.semanticTokens.colors.primary300._light : theme.semanticTokens.colors.primary300._dark;
-		const waterColor = colorMode === 'light'? theme.semanticTokens.colors.homeBoxTurquoise._light : theme.semanticTokens.colors.homeBoxTurquoise._dark;
-		containerWidth = containerRef.current.clientWidth
-		containerHeight = containerRef.current.clientHeight
-		projection = d3.geoOrthographic().clipAngle(90).translate([containerWidth/2, containerHeight/2]).scale(SCALE)
-		path = d3.geoPath(projection)
-
+export function passInitialProps(containerRef, svgRef, themeProps, colorModeProps) {
+	theme = themeProps;
+	colorMode = colorModeProps;
+	containerWidth = containerRef.current.clientWidth
+	containerHeight = containerRef.current.clientHeight
+	projection = d3.geoOrthographic().clipAngle(90).translate([containerWidth/2, containerHeight/2]).scale(SCALE)
+	path = d3.geoPath(projection)
+	if (!svg || !water || !land || !location) {
 		svg = d3.select(svgRef.current)
-				.attr("id", "globe")
-				.attr("width", "100%")
-				.attr("height", "100%")
-				.attr("viewBox", `0 0 ${containerWidth} ${containerHeight}`)
-	if (!water) {
 		water = svg.append("g").attr("id", "water")
+		land = svg.append('g').attr("id", "land")
+		location = svg.append("g").attr("id", "location")
+	}
+}
+
+export function updateLightDarkTheme(colorMode) {
+	colorMode = colorMode
+	water.selectAll("path").attr("fill", colorMode === 'light'? theme.semanticTokens.colors.homeBoxTurquoise._light : theme.semanticTokens.colors.homeBoxTurquoise._dark)
+	land.selectAll("path").attr("fill", colorMode === 'light'? theme.semanticTokens.colors.primary300._light : theme.semanticTokens.colors.primary300._dark)
+}
+
+
+export function renderGlobe(topoJSONData) {
+	if (svg) {
+		svg
+			.attr("id", "globe")
+			.attr("width", "100%")
+			.attr("height", "100%")
+			.attr("viewBox", `0 0 ${containerWidth} ${containerHeight}`)
+		svg.call(zoom).call(drag)
+	}
+	if (water) {
 		water
 			.append("path")
 			.datum({type:"Sphere"})
-			.attr("d", path).attr("fill", waterColor)
+			.attr("d", path).attr("fill", colorMode === 'light'? theme.semanticTokens.colors.homeBoxTurquoise._light : theme.semanticTokens.colors.homeBoxTurquoise._dark)
 	}
-	if (!land) {
-		land = svg.append('g').attr("id", "land")
+	if (land) {
 		land
-			.attr("fill", landColor)
+			.attr("fill", colorMode === 'light'? theme.semanticTokens.colors.primary300._light : theme.semanticTokens.colors.primary300._dark)
 			.selectAll("path")
 			.data(feature(topoJSONData, topoJSONData.objects.countries).features)
 			.join("path")
 			.attr("d", path);
 	}
-	svg.call(zoom).call(drag)
-	}
 	
 }
+	
+
 
 export function renderLocation(locationJSON) {
-	if (!location) {
-		location = svg.append("g").attr("id", "location")
+	if (location) {
 		location
-			.attr("fill", "red")
+			.attr("fill", "#D21F3C")
 			.attr("cursor", "pointer")
 			.selectAll("circle")
 			.data(locationJSON)
