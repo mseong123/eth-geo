@@ -11,6 +11,8 @@ let SCALE;
 let sens = 0.2;
 let theme;
 let colorMode;
+let currentZoom = false;
+let zooming = false;
 
 if (typeof window !== 'undefined') {
 	//hardcoded breakpoints
@@ -22,23 +24,60 @@ let containerWidth;
 let containerHeight;
 
 
+function zoomToLocation(coordinates) {
+    svg.transition().duration(750).tween("rotate", function() {
+        const r = d3.interpolate(projection.rotate(), [-coordinates[0],-coordinates[1]]);
+        return function(t) {
+            projection.rotate(r(t));
+            svg.selectAll("path").attr("d", path);
+			if (!currentZoom) {
+				location
+					.selectAll("circle")
+					.attr('cx', d => projection(d.regionCoordinates)[0])
+					.attr('cy', d => projection(d.regionCoordinates)[1])
+					.style("display", d => isVisible(d.regionCoordinates)? "block":"none" )
+			}
+			else {
+				location
+					.selectAll("circle")
+					.attr('cx', d => projection(d.countryCoordinates)[0])
+					.attr('cy', d => projection(d.countryCoordinates)[1])
+					.style("display", d => isVisible(d.countryCoordinates)? "block":"none" )
+			}
+        }
+    })
+  }
+
 function dragged(event) {
-    let rotation = projection.rotate();
-    const lambda = event.x;
-    const phi = -event.y;
-    projection.rotate([lambda * sens, phi * sens, rotation[2]]); 
-	svg.selectAll("path").attr("d", path);
-	location
-		.selectAll("circle")
-		.attr('cx', d => projection(d.regionCoordinates)[0])
-        .attr('cy', d => projection(d.regionCoordinates)[1])
-        .style("display", d => isVisible(d.regionCoordinates)? "block":"none" )
+	if (!zooming) {
+		let rotation = projection.rotate();
+		const lambda = event.x;
+		const phi = -event.y;
+		projection.rotate([lambda * sens, phi * sens, rotation[2]]); 
+		svg.selectAll("path").attr("d", path);
+		if (!currentZoom) {
+			location
+				.selectAll("circle")
+				.attr('cx', d => projection(d.regionCoordinates)[0])
+				.attr('cy', d => projection(d.regionCoordinates)[1])
+				.style("display", d => isVisible(d.regionCoordinates)? "block":"none" )
+		}
+		else {
+			location
+				.selectAll("circle")
+				.attr('cx', d => projection(d.countryCoordinates)[0])
+				.attr('cy', d => projection(d.countryCoordinates)[1])
+				.style("display", d => isVisible(d.countryCoordinates)? "block":"none" )
+		}
+	}
 }
 
 const drag = d3.drag()
 	.subject(function() {
-		const r = projection.rotate();	
-		return { x: r[0] / sens, y: -r[1] / sens,z:r[2]};
+		if (!zooming) {
+			const r = projection.rotate();	
+			return { x: r[0] / sens, y: -r[1] / sens,z:r[2]};
+		}
 	})
 	.on("drag", dragged);
 
@@ -49,6 +88,7 @@ function isVisible(coords) {
 }
 
 function zoomed(event) {
+	zooming = true;
     const {transform} = event;
     const zoomCenterX = containerWidth / 2;
     const zoomCenterY = containerHeight / 2;
@@ -62,6 +102,34 @@ function zoomed(event) {
 	location.attr("transform", transform)
 }
 
+function zoomEnd(event) {
+	if (event.transform.k >= 2) {
+		location	
+			.selectAll("circle")
+			.transition()
+			.duration(250)
+			.attr('cx', d => projection(d.countryCoordinates)[0])
+			.attr('cy', d => projection(d.countryCoordinates)[1])
+			.attr("r", 6)
+			.style("display", d => isVisible(d.countryCoordinates)? "block":"none" )
+			.on("end",()=>zooming = false)
+		currentZoom = true;
+	}
+	else {
+		location	
+			.selectAll("circle")
+			.transition()
+			.duration(250)
+			.attr('cx', d => projection(d.regionCoordinates)[0])
+			.attr('cy', d => projection(d.regionCoordinates)[1])
+			.attr("r", 15)
+			.style("display", d => isVisible(d.regionCoordinates)? "block":"none" )
+			.on("end",()=>zooming = false)
+			currentZoom = false;
+			
+	}
+}
+
 
 
 const zoom = d3.zoom()
@@ -69,7 +137,7 @@ const zoom = d3.zoom()
         return event.type === "dblclick" || event.type === "wheel" || event.type === "pinch"
     })
 	.scaleExtent([1, 6])
-    .on("zoom", zoomed)
+    .on("zoom", zoomed).on("end", zoomEnd)
 
 export function passInitialProps(containerRef, svgRef, themeProps, colorModeProps) {
 	theme = themeProps;
@@ -91,7 +159,6 @@ export function updateLightDarkTheme(colorMode) {
 	water.selectAll("path").attr("fill", colorMode === 'light'? theme.semanticTokens.colors.homeBoxTurquoise._light : theme.semanticTokens.colors.homeBoxTurquoise._dark)
 	land.selectAll("path").attr("fill", colorMode === 'light'? theme.semanticTokens.colors.primary300._light : theme.semanticTokens.colors.primary300._dark)
 }
-
 
 export function renderGlobe(topoJSONData) {
 	if (svg) {
@@ -116,22 +183,24 @@ export function renderGlobe(topoJSONData) {
 			.join("path")
 			.attr("d", path);
 	}
-	
 }
-	
 
 
 export function renderLocation(locationJSON) {
 	if (location) {
 		location
-			.attr("fill", "#D21F3C")
-			.attr("cursor", "pointer")
 			.selectAll("circle")
+			.attr("fill", d => d.color)
+			.attr("cursor", "pointer")
 			.data(locationJSON)
 			.join("circle")
 			.attr("cx", d=>projection(d.regionCoordinates)[0])
 			.attr("cy", d=>projection(d.regionCoordinates)[1])
 			.attr("r", 15)
 			.style("display",d=>isVisible(d.regionCoordinates[0])? "block":"none")
+			.on("click", (e, d)=>{
+				e.stopPropagation()
+				currentZoom? zoomToLocation(d.countryCoordinates) : zoomToLocation(d.regionCoordinates) 
+			})
 	}
 }

@@ -29,18 +29,24 @@ const regionMapping = {
   "Taiwan ":"EastAsia",
   Hongkong:"EastAsia",
 }
+
+const colorMapping = {
+  SEA:"#D21F3C",
+  EastAsia:"#FFBF00"
+}
+
 const coordinatesMapping = {
   SEA:[115.6628, -2.2180],
   EastAsia:[106.5348, 38.7946],
-  "Thailand ":[100.9925, 15.8700],
-  Malaysia:[101.9758, 4.2105],
+  "Thailand ":[100.5018, 13.7563],
+  Malaysia:[101.6841, 3.1319],
   Vietnam:[108.2772, 14.0583],
   Hongkong:[114.1694, 22.3193],
   "Taiwan ":[120.9605, 23.6978],
   Philippines:[121.7740, 12.8797],
   China:[104.1954, 35.8617],
   Singapore:[103.8198, 1.3521],
-  Indonesia:[113.9213, -0.7893]
+  Indonesia:[106.8229, -6.1944]
 }
 
 function convertData(dataJSON) {
@@ -66,7 +72,8 @@ function convertData(dataJSON) {
       regionCoordinates:coordinatesMapping[regionMapping[country]],//[longtitude,latitude]
       country:country,
       countryCoordinates:coordinatesMapping[country], //[longtitude,latitude]
-      organisationData:organisations //array
+      organisationData:organisations, //array
+      color:colorMapping[regionMapping[country]]
     }
   })
   return result
