@@ -1,10 +1,10 @@
 import * as d3 from 'd3'
 import { feature } from 'topojson';
-import { useColorMode, useTheme } from "@chakra-ui/react"
 
 let svg
 let land;
 let water;
+let location;
 let projection;
 let path;
 let SCALE
@@ -26,9 +26,11 @@ function dragged(event) {
     const phi = -event.y;
     projection.rotate([lambda * sens, phi * sens, rotation[2]]); 
 	svg.selectAll("path").attr("d", path);
-//   circle.selectAll("circle").attr('cx', d=>projection(d.coordinates)[0])
-//             .attr('cy', d=>projection(d.coordinates)[1])
-//             .attr("class", isVisible(point.coordinates)? "point":"point hidden" )
+	location
+		.selectAll("circle")
+		.attr('cx', d => projection(d.regionCoordinates)[0])
+        .attr('cy', d => projection(d.regionCoordinates)[1])
+        .attr("display", d => isVisible(d.regionCoordinates)? "block":"none" )
 }
 
 const drag = d3.drag()
@@ -38,7 +40,11 @@ const drag = d3.drag()
 	})
 	.on("drag", dragged);
 
-
+function isVisible(coords) {
+	const [lambda, phi] = projection.rotate();
+	const rotated = d3.geoRotation([lambda, phi])(coords);
+	return rotated[0] >= -90 && rotated[0] <= 90;
+}
 
 function zoomed(event) {
     const {transform} = event;
@@ -63,33 +69,54 @@ const zoom = d3.zoom()
 	.scaleExtent([1, 6])
     .on("zoom", zoomed)
 
-export function initialRender(containerRef, svgRef, topoJSONData, theme, colorMode) {
-	console.log(theme)
-	const landColor = colorMode === 'light'? theme.semanticTokens.colors.primary300._light : theme.semanticTokens.colors.primary300._dark;
-	const waterColor = colorMode === 'light'? theme.semanticTokens.colors.homeBoxTurquoise._light : theme.semanticTokens.colors.homeBoxTurquoise._dark;
-	containerWidth = containerRef.current.clientWidth
-    containerHeight = containerRef.current.clientHeight
-	projection = d3.geoOrthographic().clipAngle(90).translate([containerWidth/2, containerHeight/2]).scale(SCALE)
-	path = d3.geoPath(projection)
+export function renderGlobe(containerRef, svgRef, topoJSONData, theme, colorMode) {
+	// console.log(theme)
+	if (!svg) {
+		const landColor = colorMode === 'light'? theme.semanticTokens.colors.primary300._light : theme.semanticTokens.colors.primary300._dark;
+		const waterColor = colorMode === 'light'? theme.semanticTokens.colors.homeBoxTurquoise._light : theme.semanticTokens.colors.homeBoxTurquoise._dark;
+		containerWidth = containerRef.current.clientWidth
+		containerHeight = containerRef.current.clientHeight
+		projection = d3.geoOrthographic().clipAngle(90).translate([containerWidth/2, containerHeight/2]).scale(SCALE)
+		path = d3.geoPath(projection)
 
-	svg = d3.select(svgRef.current)
-            .attr("width", "100%")
-            .attr("height", "100%")
-            .attr("viewBox", `0 0 ${containerWidth} ${containerHeight}`)
-	water = svg.append("g")
-	water
-		.append("path")
-		.datum({type:"Sphere"})
-		.attr("d", path).attr("fill", waterColor)
-	land = svg.append('g')
-	land
-		.attr("fill", landColor)
-		.attr("cursor", "pointer")
-		.selectAll("path")
-		.data(feature(topoJSONData, topoJSONData.objects.countries).features)
-		.join("path")
-		.attr("d", path);
-
+		svg = d3.select(svgRef.current)
+				.attr("id", "globe")
+				.attr("width", "100%")
+				.attr("height", "100%")
+				.attr("viewBox", `0 0 ${containerWidth} ${containerHeight}`)
+	if (!water) {
+		water = svg.append("g").attr("id", "water")
+		water
+			.append("path")
+			.datum({type:"Sphere"})
+			.attr("d", path).attr("fill", waterColor)
+	}
+	if (!land) {
+		land = svg.append('g').attr("id", "land")
+		land
+			.attr("fill", landColor)
+			.selectAll("path")
+			.data(feature(topoJSONData, topoJSONData.objects.countries).features)
+			.join("path")
+			.attr("d", path);
+	}
 	svg.call(zoom).call(drag)
+	}
 	
+}
+
+export function renderLocation(locationJSON) {
+	if (!location) {
+		location = svg.append("g").attr("id", "location")
+		location
+			.attr("fill", "red")
+			.attr("cursor", "pointer")
+			.selectAll("circle")
+			.data(locationJSON)
+			.join("circle")
+			.attr("cx", d=>projection(d.regionCoordinates)[0])
+			.attr("cy", d=>projection(d.regionCoordinates)[1])
+			.attr("r", 15)
+			.style("display",d=>isVisible(d.regionCoordinates[0])? "block":"none")
+	}
 }

@@ -5,6 +5,19 @@ import Papa from 'papaparse';
 
 const topoFileName = "countries-110m.json"
 const datafileName = "SEA_data.csv"
+
+const countries = [
+  "Thailand ",
+  "Malaysia",
+  "Singapore",
+  "Vietnam",
+  "Indonesia",
+  "Philippines",
+  "China",
+  "Taiwan ",
+  "Hongkong"
+]
+
 const regionMapping = {
   "Thailand ":"SEA",
   Malaysia:"SEA",
@@ -15,7 +28,6 @@ const regionMapping = {
   China:"EastAsia",
   "Taiwan ":"EastAsia",
   Hongkong:"EastAsia",
-
 }
 const coordinatesMapping = {
   SEA:[115.6628, -2.2180],
@@ -43,17 +55,21 @@ function convertData(dataJSON) {
       return countries !== "Global "
     })
   })
-  //convert 'Base Where' to array of objects with region coordinates and country coordinate
-  dataJSON.data.forEach((data)=>{
-    data['Base Where'] = data['Base Where'].map(data=>{
-      return {
-        region:regionMapping[data],
-        regionCoordinates:coordinatesMapping[regionMapping[data]],
-        country:data, 
-        countryCoordinates:coordinatesMapping[data]
-      }
+  //split organizations by regions/country
+  const result = countries.map(country=>{
+    let organisations = dataJSON.data.filter(data=>{
+      if (data['Base Where'].includes(country))
+        return data
     })
+    return {
+      region:regionMapping[country],
+      regionCoordinates:coordinatesMapping[regionMapping[country]],//[longtitude,latitude]
+      country:country,
+      countryCoordinates:coordinatesMapping[country], //[longtitude,latitude]
+      organisationData:organisations //array
+    }
   })
+  return result
 }
 
 
@@ -62,13 +78,10 @@ export default async function Geo() {
   const topoJSONData = JSON.parse(content)
   const data = await fs.readFile(process.cwd()+"/src/data/" + datafileName, "utf8")
   const dataJSON = Papa.parse(data, {header:true})
-  convertData(dataJSON)
-  dataJSON.data.forEach(data=>{
-    console.log(data)
-  })
+  const locationJSON = convertData(dataJSON)
 
   return (
-    <GeoMap topoJSONData={topoJSONData}>
+    <GeoMap topoJSONData={topoJSONData} locationJSON={locationJSON}>
     </GeoMap>
   );
 }

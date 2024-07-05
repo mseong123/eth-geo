@@ -7,10 +7,9 @@ import {
 
   import { useEffect, useRef } from 'react'
   import React from 'react'
-  import * as d3 from 'd3'
   
   import { MAIN_CONTENT_ID } from "@/lib/constants"
-  import { initialRender } from "@/lib/utils/d3-utilities"
+  import { renderGlobe, renderLocation } from "@/lib/utils/d3-utilities"
 
   const Page = React.forwardRef(({ children}, ref) => {
     return (
@@ -23,7 +22,6 @@ import {
         id={MAIN_CONTENT_ID}
         scrollMarginTop={24}
         ref={ref}
-        
         >
         {children}
       </Box>
@@ -32,7 +30,7 @@ import {
 
 Page.displayName=Page
 
-  export default function GeoMap({topoJSONData}) {
+  export default function GeoMap({topoJSONData, locationJSON}) {
     const svgRef = useRef(null)
     const containerRef = useRef(null)
     const theme = useTheme()
@@ -40,10 +38,10 @@ Page.displayName=Page
     
 
     useEffect(()=>{ 
-        initialRender(containerRef, svgRef, topoJSONData, theme, colorMode)
+        renderGlobe(containerRef, svgRef, topoJSONData, theme, colorMode)
+        renderLocation(locationJSON)
         
-        
-    },[containerRef, colorMode])
+    },[colorMode])
 
     return (
         <Page 
