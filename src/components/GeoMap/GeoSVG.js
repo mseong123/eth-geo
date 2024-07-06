@@ -1,13 +1,14 @@
 import {
     useTheme,
     useColorMode,
+	Box
   } from "@chakra-ui/react"
 
 import { useEffect, useRef } from 'react'
 import React from 'react'
 import { renderGlobe, renderLocation, passInitialProps, updateLightDarkTheme} from "@/lib/utils/d3-utilities"
 
-export default function GeoSVG({topoJSONData, locationJSON, containerRef, setZoomed}) {
+export default function GeoSVG({topoJSONData, locationJSON, containerRef, setZoomed, children}) {
 	const svgRef = useRef(null)
 	const theme = useTheme()
 	const { colorMode } = useColorMode();
@@ -23,7 +24,11 @@ export default function GeoSVG({topoJSONData, locationJSON, containerRef, setZoo
 	},[colorMode])
   
 	return (
-		<svg ref={svgRef}>
-		</svg>
+		<Box>
+			{children}
+			<svg ref={svgRef}></svg>
+		</Box>
+		
+		
 	)
   }

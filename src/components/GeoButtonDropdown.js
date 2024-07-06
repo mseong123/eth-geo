@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import {
 	Button,
 	Menu,
@@ -7,19 +7,22 @@ import {
 	MenuItem,
 	MenuList,
   } from "@chakra-ui/react"
-
+import { zoomToLocation } from "@/lib/utils/d3-utilities"
 import { BsGeoAlt } from "react-icons/bs";
 
-export default function GeoButtonDropdown({ list, ...rest }) {
-// const [selectedItem, setSelectedItem] = useState(list.text)
-const [selectedItem, setSelectedItem] = useState("hello")
+export default function GeoButtonDropdown({ dropDownRegion, dropDownCountry, zoomed, ...rest }) {
+const [selectedItem, setSelectedItem] = useState(!zoomed? dropDownRegion.name: dropDownCountry.name)
 const handleClick = (
-	e,
-	item,
-	idx
+  e,
+	item
 ) => {
 	setSelectedItem(item.text)
+  zoomToLocation(item.location)
 }
+
+useEffect(()=>{
+  setSelectedItem(!zoomed? dropDownRegion.name: dropDownCountry.name)
+}, [zoomed])
 return (
     <Menu matchWidth>
       <MenuButton
@@ -39,12 +42,12 @@ return (
         bg="dropdownBackground"
         zIndex="popover"
       >
-        {/* {list.items.map((item, idx) => {
-          const { text,  } = item
+        {!zoomed? dropDownRegion.map((item) => {
           return (
               <MenuItem
                 as="span"
-                onClick={(e) => handleClick(e, item, idx)}
+                key={item.text}
+                onClick={(e) => handleClick(e, item)}
                 p={2}
                 textAlign="center"
                 justifyContent="center"
@@ -58,12 +61,36 @@ return (
                   bg: "dropdownBackgroundHover",
                 }}
               >
-                {text}
+                {item.text}
               </MenuItem>
             
-          ) 
+          )}) :
+          dropDownCountry.map((item) => {
+            return (
+                <MenuItem
+                  as="span"
+                  key={item.text}
+                  onClick={(e) => handleClick(e, item)}
+                  p={2}
+                  textAlign="center"
+                  justifyContent="center"
+                  bg="dropdownBackground"
+                  _hover={{
+                    color: "primary.base",
+                    bg: "dropdownBackgroundHover",
+                  }}
+                  _focus={{
+                    color: "primary.base",
+                    bg: "dropdownBackgroundHover",
+                  }}
+                >
+                  {item.text}
+                </MenuItem>
+              
+            )
+        })} 
           
-        })} */}
+        
       </MenuList>
     </Menu>
   )

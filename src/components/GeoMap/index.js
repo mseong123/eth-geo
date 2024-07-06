@@ -29,29 +29,72 @@ const Page = React.forwardRef(({ children}, ref) => {
 
 Page.displayName=Page
 
-function dropDownItems(json) {
-  const json = array.reduce((acc, value) => {
-    if (!acc.includes(value)) {
-        acc.push(value);
-    }
-    return acc;
-}, []);
-}
+//hardcode dropDownItems for now. To write parsing logic in future
+const dropDownRegion = [
+  {
+    text:"SEA",
+    location:[115.6628, -2.2180],
+  },
+  {
+    text:"East Asia",
+    location:[106.5348, 38.7946]
+  }
+]
+dropDownRegion.name="Region"
+
+const dropDownCountry = [
+  {
+    text:"Thailand",
+    location:[100.5018, 13.7563],
+  },
+  {
+    text:"Malaysia",
+    location:[101.6841, 3.1319],
+  },
+  {
+    text:"Vietnam",
+    location:[108.2772, 14.0583],
+  },
+  {
+    text:"Hongkong",
+    location:[114.1694, 22.3193],
+  },
+  {
+    text:"Taiwan",
+    location:[120.9605, 23.6978],
+  },
+  {
+    text:"Philippines",
+    location:[121.7740, 12.8797],
+  },
+  {
+    text:"China",
+    location:[104.1954, 35.8617],
+  },
+  {
+    text:"Singapore",
+    location:[103.8198, 1.3521],
+  },
+  {
+    text:"Indonesia",
+    location:[106.8229, -6.1944],
+  },
+
+]
+dropDownCountry.name="Country"
+
 
 export default function GeoMap({topoJSONData, locationJSON}) {
   const containerRef = useRef(null)
   const [ zoomed, setZoomed ] = useState(false);
-  // const dropDownItems = dropDownItems(locationJSON)
-  console.log(locationJSON)
 
   return (
       <Page 
         ref={containerRef}
         >
-          <GeoButtonDropdown></GeoButtonDropdown>
           <GeoSVG setZoomed={setZoomed} topoJSONData={topoJSONData} locationJSON={locationJSON} containerRef={containerRef}>
+            <GeoButtonDropdown pos="absolute" left={{ base: "4", lg: "25%" }} mt={2} ml={2} zoomed={zoomed} dropDownRegion={dropDownRegion} dropDownCountry={dropDownCountry}></GeoButtonDropdown>
           </GeoSVG>
-          {zoomed? "Hello":"goodbye"}
       </Page>
   )
 }

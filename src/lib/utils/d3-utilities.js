@@ -24,7 +24,7 @@ if (typeof window !== 'undefined') {
 let containerWidth;
 let containerHeight;
 
-function zoomToLocation(coordinates) {
+export function zoomToLocation(coordinates) {
     svg.transition().duration(750).tween("rotate", function() {
         const r = d3.interpolate(projection.rotate(), [-coordinates[0],-coordinates[1]]);
         return function(t) {
@@ -130,7 +130,7 @@ function zoomEnd(event) {
 			.duration(250)
 			.attr('cx', d => projection(d.countryCoordinates)[0])
 			.attr('cy', d => projection(d.countryCoordinates)[1])
-			.attr("r", 8)
+			.attr("r", 6)
 			.style("display", d => isVisible(d.countryCoordinates)? "block":"none" )
 			.on("end",()=>zooming = false)
 		location	
@@ -138,7 +138,7 @@ function zoomEnd(event) {
 			.transition()
 			.duration(250)
 			.text(d=>d.organisationData.length)
-			.style("font-size", theme.fontSizes["2xs"])
+			.style("font-size", theme.fontSizes["3xs"])
 			.attr('x', d => projection(d.countryCoordinates)[0])
 			.attr('y', d => projection(d.countryCoordinates)[1])
 			.style("display", d => isVisible(d.countryCoordinates)? "block":"none" )
@@ -166,7 +166,8 @@ function zoomEnd(event) {
 			.attr('y', d => projection(d.regionCoordinates)[1])
 			.style("display", d => isVisible(d.regionCoordinates)? "block":"none" )
 			.on("end",()=>zooming = false)
-			currentZoom = false;
+		currentZoom = false;
+		setZoomed(false)
 			
 	}
 }
