@@ -13,6 +13,7 @@ let theme;
 let colorMode;
 let currentZoom = false;
 let zooming = false;
+let setZoomed;
 
 if (typeof window !== 'undefined') {
 	//hardcoded breakpoints
@@ -143,6 +144,7 @@ function zoomEnd(event) {
 			.style("display", d => isVisible(d.countryCoordinates)? "block":"none" )
 			.on("end",()=>zooming = false)
 		currentZoom = true;
+		setZoomed(true)
 	}
 	else {
 		location	
@@ -178,10 +180,11 @@ const zoom = d3.zoom()
 	.scaleExtent([1, 6])
     .on("zoom", zoomed).on("end", zoomEnd)
 
-export function passInitialProps(containerRef, svgRef, themeProps, colorModeProps) {
+export function passInitialProps(containerRef, svgRef, themeProps, colorModeProps, setZoomedProps) {
 	theme = themeProps;
 	console.log(theme)
 	colorMode = colorModeProps;
+	setZoomed = setZoomedProps;
 	containerWidth = containerRef.current.clientWidth
 	containerHeight = containerRef.current.clientHeight
 	projection = d3.geoOrthographic().clipAngle(90).translate([containerWidth/2, containerHeight/2]).scale(SCALE)
