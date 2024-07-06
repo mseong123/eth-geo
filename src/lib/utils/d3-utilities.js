@@ -1,4 +1,5 @@
 import * as d3 from 'd3'
+import { on } from 'events';
 import { feature } from 'topojson';
 
 let svg
@@ -14,6 +15,7 @@ let colorMode;
 let currentZoom = false;
 let zooming = false;
 let setZoomed;
+let onOpen;
 
 if (typeof window !== 'undefined') {
 	//hardcoded breakpoints
@@ -133,6 +135,13 @@ function zoomEnd(event) {
 			.attr("r", 6)
 			.style("display", d => isVisible(d.countryCoordinates)? "block":"none" )
 			.on("end",()=>zooming = false)
+		location
+			.selectAll("circle")
+			.on("click", (e, d)=>{
+				e.stopPropagation()
+				currentZoom? zoomToLocation(d.countryCoordinates) : zoomToLocation(d.regionCoordinates)
+				onOpen()
+			})
 		location	
 			.selectAll("text")
 			.transition()
@@ -143,6 +152,13 @@ function zoomEnd(event) {
 			.attr('y', d => projection(d.countryCoordinates)[1])
 			.style("display", d => isVisible(d.countryCoordinates)? "block":"none" )
 			.on("end",()=>zooming = false)
+		location
+			.selectAll("text")
+			.on("click", (e, d)=>{
+				e.stopPropagation()
+				currentZoom? zoomToLocation(d.countryCoordinates) : zoomToLocation(d.regionCoordinates)
+				onOpen()
+			})
 		currentZoom = true;
 		setZoomed(true)
 	}
@@ -156,6 +172,12 @@ function zoomEnd(event) {
 			.attr("r", 16)
 			.style("display", d => isVisible(d.regionCoordinates)? "block":"none" )
 			.on("end",()=>zooming = false)
+		location
+			.selectAll("circle")
+			.on("click", (e, d)=>{
+				e.stopPropagation()
+				currentZoom? zoomToLocation(d.countryCoordinates) : zoomToLocation(d.regionCoordinates)
+			})
 		location	
 			.selectAll("text")
 			.transition()
@@ -164,8 +186,14 @@ function zoomEnd(event) {
 			.style("font-size", theme.fontSizes.md)
 			.attr('x', d => projection(d.regionCoordinates)[0])
 			.attr('y', d => projection(d.regionCoordinates)[1])
-			.style("display", d => isVisible(d.regionCoordinates)? "block":"none" )
+			.style("display", d => isVisible(d.regionCoordinates)? "block":"none")
 			.on("end",()=>zooming = false)
+		location
+			.selectAll("text")
+			.on("click", (e, d)=>{
+				e.stopPropagation()
+				currentZoom? zoomToLocation(d.countryCoordinates) : zoomToLocation(d.regionCoordinates)
+			})
 		currentZoom = false;
 		setZoomed(false)
 			
@@ -181,11 +209,12 @@ const zoom = d3.zoom()
 	.scaleExtent([1, 6])
     .on("zoom", zoomed).on("end", zoomEnd)
 
-export function passInitialProps(containerRef, svgRef, themeProps, colorModeProps, setZoomedProps) {
+export function passInitialProps(containerRef, svgRef, themeProps, colorModeProps, setZoomedProps, onOpenProps) {
 	theme = themeProps;
 	console.log(theme)
 	colorMode = colorModeProps;
 	setZoomed = setZoomedProps;
+	onOpen = onOpenProps;	
 	containerWidth = containerRef.current.clientWidth
 	containerHeight = containerRef.current.clientHeight
 	projection = d3.geoOrthographic().clipAngle(90).translate([containerWidth/2, containerHeight/2]).scale(SCALE)
@@ -240,13 +269,14 @@ export function renderLocation(locationJSON) {
 			.attr("cursor", "pointer")
 			.data(locationJSON)
 			.join("circle")
+			.attr("id", d=>d.region)
 			.attr("cx", d=>projection(d.regionCoordinates)[0])
 			.attr("cy", d=>projection(d.regionCoordinates)[1])
 			.attr("r", 16)
 			.style("display",d=>isVisible(d.regionCoordinates[0])? "block":"none")
 			.on("click", (e, d)=>{
 				e.stopPropagation()
-				currentZoom? zoomToLocation(d.countryCoordinates) : zoomToLocation(d.regionCoordinates) 
+				currentZoom? zoomToLocation(d.countryCoordinates) : zoomToLocation(d.regionCoordinates)
 			})
 		location
 			.selectAll("text")
@@ -263,8 +293,10 @@ export function renderLocation(locationJSON) {
 			.style("display",d=>isVisible(d.regionCoordinates[0])? "block":"none")
 			.on("click", (e, d)=>{
 				e.stopPropagation()
-				currentZoom? zoomToLocation(d.countryCoordinates) : zoomToLocation(d.regionCoordinates) 
+				currentZoom? zoomToLocation(d.countryCoordinates) : zoomToLocation(d.regionCoordinates)
 			})
+		zoomToLocation(locationJSON[0].regionCoordinates)
+		
 
 	}
 }

@@ -1,11 +1,13 @@
 'use client'
 import {
     Box,
+    useDisclosure,
   } from "@chakra-ui/react"
 
 import { useRef, useState } from 'react'
 import React from 'react'
 import GeoButtonDropdown from "@/components/GeoButtonDropdown"
+import GeoDrawer from "@/components/GeoButtonDropdown"
 import GeoSVG from "@/components/GeoMap/GeoSVG"
 
 import { MAIN_CONTENT_ID } from "@/lib/constants"
@@ -30,6 +32,7 @@ const Page = React.forwardRef(({ children}, ref) => {
 Page.displayName=Page
 
 //hardcode dropDownItems for now. To write parsing logic in future
+
 const dropDownRegion = [
   {
     text:"SEA",
@@ -40,6 +43,7 @@ const dropDownRegion = [
     location:[106.5348, 38.7946]
   }
 ]
+
 dropDownRegion.name="Region"
 
 const dropDownCountry = [
@@ -81,20 +85,26 @@ const dropDownCountry = [
   },
 
 ]
+
 dropDownCountry.name="Country"
+
+
+
 
 
 export default function GeoMap({topoJSONData, locationJSON}) {
   const containerRef = useRef(null)
   const [ zoomed, setZoomed ] = useState(false);
+  // const { isOpen, onOpen, onClose } = useDisclosure()
+  
+
 
   return (
       <Page 
         ref={containerRef}
         >
-          <GeoSVG setZoomed={setZoomed} topoJSONData={topoJSONData} locationJSON={locationJSON} containerRef={containerRef}>
-            <GeoButtonDropdown pos="absolute" left={{ base: "4", lg: "25%" }} mt={2} ml={2} zoomed={zoomed} dropDownRegion={dropDownRegion} dropDownCountry={dropDownCountry}></GeoButtonDropdown>
-          </GeoSVG>
+          <GeoButtonDropdown dropDownRegion={dropDownRegion} dropDownCountry={dropDownCountry} zoomed={zoomed} pos="absolute" left={{ base: "4", lg: "25%" }} mt={2} ml={2} ></GeoButtonDropdown>
+          <GeoSVG setZoomed={setZoomed} topoJSONData={topoJSONData} locationJSON={locationJSON} containerRef={containerRef}></GeoSVG>
       </Page>
   )
 }
