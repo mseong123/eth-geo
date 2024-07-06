@@ -118,8 +118,7 @@ function zoomed(event) {
     transform.y = newY;
     land.attr("transform", transform);
     water.attr("transform", transform)
-	location.selectAll("circle").attr("transform", transform)
-	location.selectAll("text").attr("transform", transform)
+	location.attr("transform", transform)
 }
 
 function zoomEnd(event) {
@@ -130,7 +129,7 @@ function zoomEnd(event) {
 			.duration(250)
 			.attr('cx', d => projection(d.countryCoordinates)[0])
 			.attr('cy', d => projection(d.countryCoordinates)[1])
-			.attr("r", 6)
+			.attr("r", 8)
 			.style("display", d => isVisible(d.countryCoordinates)? "block":"none" )
 			.on("end",()=>zooming = false)
 		location	
@@ -138,6 +137,7 @@ function zoomEnd(event) {
 			.transition()
 			.duration(250)
 			.text(d=>d.organisationData.length)
+			.style("font-size", theme.fontSizes["2xs"])
 			.attr('x', d => projection(d.countryCoordinates)[0])
 			.attr('y', d => projection(d.countryCoordinates)[1])
 			.style("display", d => isVisible(d.countryCoordinates)? "block":"none" )
@@ -151,14 +151,15 @@ function zoomEnd(event) {
 			.duration(250)
 			.attr('cx', d => projection(d.regionCoordinates)[0])
 			.attr('cy', d => projection(d.regionCoordinates)[1])
-			.attr("r", 15)
+			.attr("r", 16)
 			.style("display", d => isVisible(d.regionCoordinates)? "block":"none" )
 			.on("end",()=>zooming = false)
 		location	
 			.selectAll("text")
 			.transition()
 			.duration(250)
-			.text(d=>d.organisationData)
+			.text(d=>d.regionCount)
+			.style("font-size", theme.fontSizes.md)
 			.attr('x', d => projection(d.regionCoordinates)[0])
 			.attr('y', d => projection(d.regionCoordinates)[1])
 			.style("display", d => isVisible(d.regionCoordinates)? "block":"none" )
@@ -179,17 +180,21 @@ const zoom = d3.zoom()
 
 export function passInitialProps(containerRef, svgRef, themeProps, colorModeProps) {
 	theme = themeProps;
+	console.log(theme)
 	colorMode = colorModeProps;
 	containerWidth = containerRef.current.clientWidth
 	containerHeight = containerRef.current.clientHeight
 	projection = d3.geoOrthographic().clipAngle(90).translate([containerWidth/2, containerHeight/2]).scale(SCALE)
 	path = d3.geoPath(projection)
-	if (!svg || !water || !land || !location) {
-		svg = d3.select(svgRef.current)
+	if (d3.select("#globe").empty())
+		svg = d3.select(svgRef.current).attr("id", "globe")
+	if (d3.select("#water").empty())
 		water = svg.append("g").attr("id", "water")
+	if (d3.select("#land").empty())
 		land = svg.append('g').attr("id", "land")
+	if (d3.select("#location").empty())
 		location = svg.append("g").attr("id", "location")
-	}
+	
 }
 
 export function updateLightDarkTheme(colorMode) {
@@ -201,7 +206,6 @@ export function updateLightDarkTheme(colorMode) {
 export function renderGlobe(topoJSONData) {
 	if (svg) {
 		svg
-			.attr("id", "globe")
 			.attr("width", "100%")
 			.attr("height", "100%")
 			.attr("viewBox", `0 0 ${containerWidth} ${containerHeight}`)
@@ -234,7 +238,7 @@ export function renderLocation(locationJSON) {
 			.join("circle")
 			.attr("cx", d=>projection(d.regionCoordinates)[0])
 			.attr("cy", d=>projection(d.regionCoordinates)[1])
-			.attr("r", 15)
+			.attr("r", 16)
 			.style("display",d=>isVisible(d.regionCoordinates[0])? "block":"none")
 			.on("click", (e, d)=>{
 				e.stopPropagation()
@@ -242,13 +246,21 @@ export function renderLocation(locationJSON) {
 			})
 		location
 			.selectAll("text")
+			.attr("fill", "white")
+			.attr("cursor", "pointer")
 			.data(locationJSON)
-			.enter()
-			.append("text")
+			.join("text")
+			.style("font-size", theme.fontSizes.md)
+			.attr("text-anchor", "middle")
+			.attr("alignment-baseline", "middle")
 			.attr("x", d=>projection(d.regionCoordinates)[0])
 			.attr("y", d=>projection(d.regionCoordinates)[1])
 			.text(d=>d.regionCount)
-			.attr("fill", "white")
+			.style("display",d=>isVisible(d.regionCoordinates[0])? "block":"none")
+			.on("click", (e, d)=>{
+				e.stopPropagation()
+				currentZoom? zoomToLocation(d.countryCoordinates) : zoomToLocation(d.regionCoordinates) 
+			})
 
 	}
 }

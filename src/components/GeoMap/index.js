@@ -9,7 +9,7 @@ import {
   import React from 'react'
   
   import { MAIN_CONTENT_ID } from "@/lib/constants"
-  import { renderGlobe, renderLocation, passInitialProps, updateLightDarkTheme } from "@/lib/utils/d3-utilities"
+  import { renderGlobe, renderLocation, passInitialProps, updateLightDarkTheme} from "@/lib/utils/d3-utilities"
 
   const Page = React.forwardRef(({ children}, ref) => {
     return (
