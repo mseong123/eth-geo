@@ -20,25 +20,25 @@ const countries = [
 ]
 
 const regionMapping = {
-  "Thailand ":"SEA",
-  Malaysia:"SEA",
-  Singapore:"SEA",
-  Vietnam:"SEA",
-  Indonesia:"SEA",
-  Philippines:"SEA",
-  China:"EastAsia",
-  "Taiwan ":"EastAsia",
-  Hongkong:"EastAsia",
+  "Thailand ":"South East Asia",
+  Malaysia:"South East Asia",
+  Singapore:"South East Asia",
+  Vietnam:"South East Asia",
+  Indonesia:"South East Asia",
+  Philippines:"South East Asia",
+  China:"East Asia",
+  "Taiwan ":"East Asia",
+  Hongkong:"East Asia",
 }
 
 const colorMapping = {
-  SEA:"#D21F3C",
-  EastAsia:"#FFBF00"
+  "South East Asia":"#D21F3C",
+  "East Asia":"#FFBF00"
 }
 
 const coordinatesMapping = {
-  SEA:[115.6628, -2.2180],
-  EastAsia:[106.5348, 38.7946],
+  "South East Asia":[115.6628, -2.2180],
+  "East Asia":[106.5348, 38.7946],
   "Thailand ":[100.5018, 13.7563],
   Malaysia:[101.6841, 3.1319],
   Vietnam:[108.2772, 14.0583],

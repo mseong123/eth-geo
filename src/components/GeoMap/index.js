@@ -7,7 +7,6 @@ import {
 import { useRef, useState } from 'react'
 import React from 'react'
 import GeoButtonDropdown from "@/components/GeoButtonDropdown"
-import GeoDrawer from "@/components/GeoButtonDropdown"
 import GeoSVG from "@/components/GeoMap/GeoSVG"
 
 import { MAIN_CONTENT_ID } from "@/lib/constants"
@@ -35,7 +34,7 @@ Page.displayName=Page
 
 const dropDownRegion = [
   {
-    text:"SEA",
+    text:"South East Asia",
     location:[115.6628, -2.2180],
   },
   {
@@ -88,14 +87,11 @@ const dropDownCountry = [
 
 dropDownCountry.name="Country"
 
-
-
-
-
 export default function GeoMap({topoJSONData, locationJSON}) {
   const containerRef = useRef(null)
   const [ zoomed, setZoomed ] = useState(false);
-  // const { isOpen, onOpen, onClose } = useDisclosure()
+  const [ country, setCountry] = useState(null)
+  
   
 
 
@@ -104,7 +100,7 @@ export default function GeoMap({topoJSONData, locationJSON}) {
         ref={containerRef}
         >
           <GeoButtonDropdown dropDownRegion={dropDownRegion} dropDownCountry={dropDownCountry} zoomed={zoomed} pos="absolute" left={{ base: "4", lg: "25%" }} mt={2} ml={2} ></GeoButtonDropdown>
-          <GeoSVG setZoomed={setZoomed} topoJSONData={topoJSONData} locationJSON={locationJSON} containerRef={containerRef}></GeoSVG>
+          <GeoSVG country={country} setCountry={setCountry} setZoomed={setZoomed} topoJSONData={topoJSONData} locationJSON={locationJSON} containerRef={containerRef}></GeoSVG>
       </Page>
   )
 }

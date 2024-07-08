@@ -16,6 +16,7 @@ let currentZoom = false;
 let zooming = false;
 let setZoomed;
 let onOpen;
+let setCountry;
 
 if (typeof window !== 'undefined') {
 	//hardcoded breakpoints
@@ -140,6 +141,7 @@ function zoomEnd(event) {
 			.on("click", (e, d)=>{
 				e.stopPropagation()
 				currentZoom? zoomToLocation(d.countryCoordinates) : zoomToLocation(d.regionCoordinates)
+				setCountry(d.country)
 				onOpen()
 			})
 		location	
@@ -157,6 +159,7 @@ function zoomEnd(event) {
 			.on("click", (e, d)=>{
 				e.stopPropagation()
 				currentZoom? zoomToLocation(d.countryCoordinates) : zoomToLocation(d.regionCoordinates)
+				setCountry(d.country)
 				onOpen()
 			})
 		currentZoom = true;
@@ -209,12 +212,14 @@ const zoom = d3.zoom()
 	.scaleExtent([1, 6])
     .on("zoom", zoomed).on("end", zoomEnd)
 
-export function passInitialProps(containerRef, svgRef, themeProps, colorModeProps, setZoomedProps, onOpenProps) {
+export function passInitialProps(containerRef, svgRef, themeProps, colorModeProps, setZoomedProps, onOpenProps, setCountryProps) {
 	theme = themeProps;
 	console.log(theme)
 	colorMode = colorModeProps;
 	setZoomed = setZoomedProps;
-	onOpen = onOpenProps;	
+	onOpen = onOpenProps;
+	setZoomed = setZoomedProps;
+	setCountry = setCountryProps;
 	containerWidth = containerRef.current.clientWidth
 	containerHeight = containerRef.current.clientHeight
 	projection = d3.geoOrthographic().clipAngle(90).translate([containerWidth/2, containerHeight/2]).scale(SCALE)
