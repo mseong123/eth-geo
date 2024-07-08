@@ -6,7 +6,7 @@ import {
 
 import { useRef, useState } from 'react'
 import React from 'react'
-import GeoButtonDropdown from "@/components/GeoButtonDropdown"
+import GeoButtonDropdown from "@/components/GeoMap/GeoButtonDropdown"
 import GeoSVG from "@/components/GeoMap/GeoSVG"
 
 import { MAIN_CONTENT_ID } from "@/lib/constants"
@@ -99,7 +99,7 @@ export default function GeoMap({topoJSONData, locationJSON}) {
       <Page 
         ref={containerRef}
         >
-          <GeoButtonDropdown dropDownRegion={dropDownRegion} dropDownCountry={dropDownCountry} currentZoom={currentZoom} pos="absolute" left={{ base: "4", lg: "25%" }} mt={2} ml={2} ></GeoButtonDropdown>
+          <GeoButtonDropdown dropDownRegion={dropDownRegion} dropDownCountry={dropDownCountry} currentZoom={currentZoom} pos="absolute" left={{ base: "2", lg: "25%" }} mt={{base:"1", lg:"4"}} ml={{base:"1", lg:"4"}} ></GeoButtonDropdown>
           <GeoSVG country={country} setCountry={setCountry} currentZoom={currentZoom} setZoomed={setZoomed} topoJSONData={topoJSONData} locationJSON={locationJSON} containerRef={containerRef}></GeoSVG>
       </Page>
   )

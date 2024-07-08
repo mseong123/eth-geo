@@ -2,7 +2,6 @@
 import { promises as fs } from "fs"
 import GeoMap from "@/components/GeoMap"
 import Papa from 'papaparse';
-import GeoButtonDropdown from "@/components/GeoButtonDropdown"
 
 const topoFileName = "countries-110m.json"
 const datafileName = "SEA_data.csv"
