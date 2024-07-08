@@ -71,12 +71,14 @@ const baseStyle = definePartsStyle({
 
 const variantSolid = definePartsStyle((props) => ({
   container: {
+    // @ts-ignore
     ...STATUS_COLORS["solid"][props.status],
   },
 }))
 
 const variantSubtle = definePartsStyle((props) => ({
   container: {
+    // @ts-ignore
     ...STATUS_COLORS["subtle"][props.status],
   },
 }))
