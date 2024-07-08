@@ -81,13 +81,13 @@ function convertData(dataJSON) {
   let SEAcount = 0;
   let EastAsiaCount = 0;
   result.forEach(country=> {
-    if (country.region === "SEA")
+    if (country.region === "South East Asia")
       SEAcount += country.organisationData.length;
     else
       EastAsiaCount += country.organisationData.length;
   })
   result.forEach(country=>{
-    if (country.region === "SEA")
+    if (country.region === "South East Asia")
       country.regionCount = SEAcount
     else 
       country.regionCount = EastAsiaCount
