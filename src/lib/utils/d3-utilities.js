@@ -125,6 +125,8 @@ function zoomed(event) {
 	location.attr("transform", transform)
 }
 
+
+
 function zoomEnd(event) {
 	if (event.transform.k >= 2) {
 		location	
@@ -162,7 +164,6 @@ function zoomEnd(event) {
 				setCountry(d.country)
 				onOpen()
 			})
-		currentZoom = true;
 		setZoomed(true)
 	}
 	else {
@@ -197,7 +198,6 @@ function zoomEnd(event) {
 				e.stopPropagation()
 				currentZoom? zoomToLocation(d.countryCoordinates) : zoomToLocation(d.regionCoordinates)
 			})
-		currentZoom = false;
 		setZoomed(false)
 			
 	}
@@ -239,6 +239,10 @@ export function updateLightDarkTheme(colorMode) {
 	colorMode = colorMode
 	water.selectAll("path").attr("fill", colorMode === 'light'? theme.semanticTokens.colors.homeBoxTurquoise._light : theme.semanticTokens.colors.homeBoxTurquoise._dark)
 	land.selectAll("path").attr("fill", colorMode === 'light'? theme.semanticTokens.colors.primary300._light : theme.semanticTokens.colors.primary300._dark)
+}
+
+export function updateZoom(currentZoomProps) {
+	currentZoom=currentZoomProps
 }
 
 export function renderGlobe(topoJSONData) {
@@ -300,6 +304,7 @@ export function renderLocation(locationJSON) {
 				e.stopPropagation()
 				currentZoom? zoomToLocation(d.countryCoordinates) : zoomToLocation(d.regionCoordinates)
 			})
+		//For initial globe spin
 		zoomToLocation(locationJSON[0].regionCoordinates)
 		
 

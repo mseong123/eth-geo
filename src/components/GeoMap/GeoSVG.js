@@ -6,10 +6,10 @@ import {
 
 import { useEffect, useRef } from 'react'
 import React from 'react'
-import { renderGlobe, renderLocation, passInitialProps, updateLightDarkTheme} from "@/lib/utils/d3-utilities"
+import { renderGlobe, renderLocation, passInitialProps, updateLightDarkTheme, updateZoom} from "@/lib/utils/d3-utilities"
 import GeoDrawer from "@/components/GeoMap/GeoDrawer"
 
-export default function GeoSVG({topoJSONData, locationJSON, containerRef, setZoomed, country, setCountry}) {
+export default function GeoSVG({topoJSONData, locationJSON, containerRef, currentZoom, setZoomed, country, setCountry}) {
 	const svgRef = useRef(null)
 	const theme = useTheme()
 	const { colorMode } = useColorMode();
@@ -26,6 +26,11 @@ export default function GeoSVG({topoJSONData, locationJSON, containerRef, setZoo
 	useEffect(()=>{
 	  updateLightDarkTheme(colorMode)
 	},[colorMode])
+
+	useEffect(()=>{
+		updateZoom(currentZoom)
+	   
+	  },[currentZoom])
   
 	return (
 		<>

@@ -10,8 +10,8 @@ import {
 import { zoomToLocation } from "@/lib/utils/d3-utilities"
 import { BsGeoAlt } from "react-icons/bs";
 
-export default function GeoButtonDropdown({ dropDownRegion, dropDownCountry, zoomed, ...rest }) {
-  const [selectedItem, setSelectedItem] = useState(!zoomed? dropDownRegion.name: dropDownCountry.name)
+export default function GeoButtonDropdown({ dropDownRegion, dropDownCountry, currentZoom, ...rest }) {
+  const [selectedItem, setSelectedItem] = useState(!currentZoom? dropDownRegion.name: dropDownCountry.name)
   const handleClick = (
     e,
     item
@@ -21,8 +21,8 @@ export default function GeoButtonDropdown({ dropDownRegion, dropDownCountry, zoo
   }
 
 useEffect(()=>{
-  setSelectedItem(!zoomed? dropDownRegion.name: dropDownCountry.name)
-}, [zoomed])
+  setSelectedItem(!currentZoom? dropDownRegion.name: dropDownCountry.name)
+}, [currentZoom])
 
 return (
     <Menu matchWidth>
@@ -43,7 +43,7 @@ return (
         bg="dropdownBackground"
         zIndex="popover"
       >
-        {!zoomed? dropDownRegion.map((item) => {
+        {!currentZoom? dropDownRegion.map((item) => {
           return (
               <MenuItem
                 as="span"
