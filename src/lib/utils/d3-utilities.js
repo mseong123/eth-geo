@@ -9,7 +9,8 @@ let location;
 let projection;
 let path;
 let SCALE;
-let sens = 0.2;
+let baseSens = 0.8;
+let zoomedSens = 0.2;
 let theme;
 let colorMode;
 let currentZoom = false;
@@ -66,7 +67,10 @@ function dragged(event) {
 		let rotation = projection.rotate();
 		const lambda = event.x;
 		const phi = -event.y;
-		projection.rotate([lambda * sens, phi * sens, rotation[2]]); 
+		if (currentZoom)
+			projection.rotate([lambda * zoomedSens, phi * zoomedSens, rotation[2]]);
+		else
+			projection.rotate([lambda * baseSens, phi * baseSens, rotation[2]]); 
 		svg.selectAll("path").attr("d", path);
 		if (!currentZoom) {
 			location
@@ -98,8 +102,10 @@ function dragged(event) {
 const drag = d3.drag()
 	.subject(function() {
 		if (!zooming) {
-			const r = projection.rotate();	
-			return { x: r[0] / sens, y: -r[1] / sens,z:r[2]};
+			const r = projection.rotate();
+			if (currentZoom)	
+				return { x: r[0] / zoomedSens, y: -r[1] / zoomedSens,z:r[2]};
+			return { x: r[0] / baseSens, y: -r[1] / baseSens,z:r[2]};
 		}
 	})
 	.on("drag", dragged);
@@ -207,8 +213,7 @@ function zoomEnd(event) {
 
 const zoom = d3.zoom()
     .filter((event)=>{
-        return event.type === "dblclick" || event.type === "wheel" || event.type === "pinch" 
-		|| event.type === "touchstart" || event.type === "touchmove" || event.type === "touchend"
+        return event.type === "dblclick" || event.type === "wheel" || event.type === "pinch" 	
     })
 	.scaleExtent([1, 6])
     .on("zoom", zoomed).on("end", zoomEnd)
