@@ -10,6 +10,7 @@ import {
 	Flex,
 	Badge,
   } from "@chakra-ui/react"
+
 import GeoCard from '@/components/GeoMap/GeoCard'
 
   export default function GeoDrawer({onClose, onOpen, isOpen, country, locationJSON}) {
@@ -43,11 +44,13 @@ import GeoCard from '@/components/GeoMap/GeoCard'
 				/>
 				{country}
 				<Badge ml="2" bgColor={data.color} color="white">{data.region}</Badge>
+				<Badge ml="2" bgColor={data.color} color="white">{"(" + data.organisationData.length+")"}</Badge>
 				<DrawerCloseButton />
 			</DrawerHeader>
-				<DrawerBody position="relative" p={3}>
-					{data.organisationData.map(organisationData=>
-						<GeoCard organisationData={organisationData}></GeoCard>
+				<DrawerBody p="6">
+					{data.organisationData.map(organisationData=>{
+						return <GeoCard key={organisationData.Name} organisationData={organisationData}></GeoCard>
+					}
 					)}
 				</DrawerBody>
 			</DrawerContent>
