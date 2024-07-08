@@ -18,7 +18,6 @@ export default function GeoCard({organisationData}) {
 			rounded="base"
 			p="2"
 			my="2"
-
 		>
 			<CardHeader fontWeight="semibold">{organisationData.Name} <Badge ml="2">{organisationData.Category}</Badge></CardHeader>
 			<ChakraDivider mt={2}

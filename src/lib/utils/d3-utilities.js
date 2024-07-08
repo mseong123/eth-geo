@@ -274,10 +274,10 @@ export function renderLocation(locationJSON) {
 	if (location) {
 		location
 			.selectAll("circle")
-			.attr("fill", d => d.color)
 			.attr("cursor", "pointer")
 			.data(locationJSON)
 			.join("circle")
+			.attr("fill", d => d.color)
 			.attr("id", d=>d.region)
 			.attr("cx", d=>projection(d.regionCoordinates)[0])
 			.attr("cy", d=>projection(d.regionCoordinates)[1])
@@ -289,10 +289,10 @@ export function renderLocation(locationJSON) {
 			})
 		location
 			.selectAll("text")
-			.attr("fill", "white")
 			.attr("cursor", "pointer")
 			.data(locationJSON)
 			.join("text")
+			.attr("fill","white")
 			.style("font-size", theme.fontSizes.md)
 			.attr("text-anchor", "middle")
 			.attr("alignment-baseline", "middle")
