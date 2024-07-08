@@ -21,7 +21,7 @@ let setCountry;
 
 if (typeof window !== 'undefined') {
 	//hardcoded breakpoints
-	SCALE = window.innerWidth < 768 ? (window.innerWidth < 480 ? 175 : 250) : 325;
+	SCALE = window.innerWidth < 768 ? (window.innerWidth < 480 ? 170 : 250) : 325;
   } else {
 	SCALE = 325; // Default scale for server-side rendering
 }
