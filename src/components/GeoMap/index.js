@@ -99,7 +99,7 @@ export default function GeoMap({topoJSONData, locationJSON}) {
       <Page 
         ref={containerRef}
         >
-          <GeoButtonDropdown dropDownRegion={dropDownRegion} dropDownCountry={dropDownCountry} currentZoom={currentZoom} pos="absolute" left={{ base: "4", lg: "25%" }} mt={{base:"0", lg:"4"}} ml={{base:"0", lg:"4"}} ></GeoButtonDropdown>
+          <GeoButtonDropdown dropDownRegion={dropDownRegion} dropDownCountry={dropDownCountry} currentZoom={currentZoom} pos="absolute" left={{ base: "4", lg: "25%" }} mt={{base:"1", lg:"4"}} ml={{base:"1", lg:"4"}} ></GeoButtonDropdown>
           <GeoSVG country={country} setCountry={setCountry} currentZoom={currentZoom} setZoomed={setZoomed} topoJSONData={topoJSONData} locationJSON={locationJSON} containerRef={containerRef}></GeoSVG>
       </Page>
   )
