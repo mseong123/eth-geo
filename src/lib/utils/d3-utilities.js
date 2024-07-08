@@ -213,7 +213,7 @@ function zoomEnd(event) {
 
 const zoom = d3.zoom()
     .filter((event)=>{
-        return event.type === "dblclick" || event.type === "wheel" || event.type === "pinch" 	
+        return event.type === "dblclick" || event.type === "wheel" || (event.type === "touchstart" && event.touches.length === 2) || (event.type === "touchmove" && event.touches.length === 2)
     })
 	.scaleExtent([1, 6])
     .on("zoom", zoomed).on("end", zoomEnd)
