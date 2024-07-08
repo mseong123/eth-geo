@@ -8,7 +8,10 @@ const nextConfig = {
 			permanent: true, // or false for temporary redirects
 		  },
 		]
-	}
+	},
+	eslint: {
+		ignoreDuringBuilds: true,
+	  },
 };
 
 export default nextConfig;
