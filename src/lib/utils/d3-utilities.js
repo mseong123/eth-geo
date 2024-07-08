@@ -213,7 +213,7 @@ function zoomEnd(event) {
 
 const zoom = d3.zoom()
     .filter((event)=>{
-        return event.type === "dblclick" || event.type === "wheel" || (event.type === "touchstart" && event.touches.length === 2) || (event.type === "touchmove" && event.touches.length === 2)
+        return event.type === "dblclick" || event.type === "wheel" || (event.type === "touchstart" && event.touches.length >= 2) || (event.type === "touchmove" && event.touches.length >= 2)
     })
 	.scaleExtent([1, 6])
     .on("zoom", zoomed).on("end", zoomEnd)
@@ -257,13 +257,13 @@ export function renderGlobe(topoJSONData) {
 			.attr("width", "100%")
 			.attr("height", "100%")
 			.attr("viewBox", `0 0 ${containerWidth} ${containerHeight}`)
+		svg.call(zoom).call(drag)
 	}
 	if (water) {
 		water
 			.append("path")
 			.datum({type:"Sphere"})
 			.attr("d", path).attr("fill", colorMode === 'light'? theme.semanticTokens.colors.homeBoxTurquoise._light : theme.semanticTokens.colors.homeBoxTurquoise._dark)
-		water.call(zoom).call(drag)
 	}
 	if (land) {
 		land
@@ -272,7 +272,6 @@ export function renderGlobe(topoJSONData) {
 			.data(feature(topoJSONData, topoJSONData.objects.countries).features)
 			.join("path")
 			.attr("d", path);
-		land.call(zoom).call(drag)
 	}
 }
 
