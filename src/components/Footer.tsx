@@ -413,7 +413,7 @@ type FooterProps = {
             </BaseLink>
           ))}
         </Box>
-        <List
+        {/* <List
           display="flex"
           flexDir={{ base: "column", sm: "row" }}
           flexWrap="wrap"
@@ -423,14 +423,14 @@ type FooterProps = {
           p={5}
           m={0}
         >
-          {/* {dipperLinks.map(({ to, text }) => (
+          {dipperLinks.map(({ to, text }) => (
             <ListItem key={text} textAlign="center" px="2">
               <BaseLink href={to} w={["100%", null]} {...linkProps}>
                 {text}
               </BaseLink>
             </ListItem>
-          ))} */}
-        </List>
+          ))}
+        </List> */}
       </Flex>
     </Box>
   )

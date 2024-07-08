@@ -1,5 +1,6 @@
 // import { useTranslation } from "next-i18next"
 import { DrawerCloseButton, DrawerHeader, Flex } from "@chakra-ui/react"
+import { RiEarthFill } from "react-icons/ri";
 
 const MenuHeader = () => {
   // const { t } = useTranslation("common")
@@ -7,13 +8,13 @@ const MenuHeader = () => {
   return (
     <Flex p="6" alignItems="center" justify="space-between">
       <DrawerHeader
-        fontWeight="regular"
-        fontSize="md"
+        fontWeight="bold"
+        fontSize="3xl"
         color="body.medium"
-        textTransform="uppercase"
+        
         p="0"
       >
-        {"site-title"}
+        <RiEarthFill/>
       </DrawerHeader>
       <DrawerCloseButton fontSize="md" w="fit-content" p="2" mt="3" me="2">
         {"close"}

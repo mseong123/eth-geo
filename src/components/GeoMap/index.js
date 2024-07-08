@@ -15,7 +15,7 @@ const Page = React.forwardRef(({ children}, ref) => {
   return (
     <Box
       as="article"
-      h={{base:"60vh", sm:"150vh", md:"75vh"}}
+      h={{base:"65vh", sm:"150vh", md:"70vh"}}
       w="full" 
       p={{ base: "4", lg: "8" }}
       mx="auto"
